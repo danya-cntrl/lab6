@@ -1,4 +1,4 @@
-package com.danya.lab5.client.io;
+package com.danya.lab6.client.io;
 
 public class ViewManager {
 

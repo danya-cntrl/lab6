@@ -1,12 +1,14 @@
-package com.danya.lab5.client.managers;
+package com.danya.lab6.client.managers;
 
-import com.danya.lab5.client.io.InputManager;
-import com.danya.lab5.client.io.StudyGroupAsker;
-import com.danya.lab5.client.utils.CommandMetadata;
-import com.danya.lab5.common.models.StudyGroup;
-import com.danya.lab5.common.protocol.Request;
-import com.danya.lab5.common.protocol.Response;
+import com.danya.lab6.client.exceptions.RecurtionException;
+import com.danya.lab6.client.io.InputManager;
+import com.danya.lab6.client.io.StudyGroupAsker;
+import com.danya.lab6.client.utils.CommandMetadata;
+import com.danya.lab6.common.models.StudyGroup;
+import com.danya.lab6.common.protocol.Request;
+import com.danya.lab6.common.protocol.Response;
 
+import java.io.FileNotFoundException;
 import java.util.HashMap;
 
 public class CommandManager {
@@ -38,7 +40,7 @@ public class CommandManager {
         commands.put("execute_script", new CommandMetadata("execute_script", true, false));
     }
 
-    public void executeLab(String input) {
+    public void executeLab(String input) throws FileNotFoundException, RecurtionException {
         String[] tokens = input.trim().split("\\s+", 2);
         String cmdName = tokens[0].toLowerCase();
         String arg = (tokens.length > 1 ? tokens[1].trim() : "");
@@ -55,6 +57,17 @@ public class CommandManager {
         }
         if (command.isRequiresStringArg()  && !arg.isEmpty()) {
             System.out.println("Команде не нужен аргумент");
+            return;
+        }
+
+        if ("exit".equals(cmdName)) {
+            System.out.println("Завершение работы клиентского приложения. Всего хорошего!");
+            System.exit(0);
+        }
+
+        if ("execute_script".equals(cmdName)) {
+            System.out.println("Выполнение скрипта из файла: " + arg);
+            inputManager.loadFile(arg);
             return;
         }
 
@@ -111,6 +124,11 @@ public class CommandManager {
             } catch (RuntimeException e) {
                 System.out.println("Критическая ошибка при чтении скрипта: " + e.getMessage());
                 System.out.println("Выполнение текущего скрипта прервано.");
+                inputManager.closeScript();
+            } catch (FileNotFoundException e) {
+                System.out.println(e.getMessage());
+            } catch (RecurtionException e) {
+                System.out.println(e.getMessage());
                 inputManager.closeScript();
             }
         }

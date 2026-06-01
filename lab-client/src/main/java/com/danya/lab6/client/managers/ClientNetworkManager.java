@@ -1,7 +1,7 @@
-package com.danya.lab5.client.managers;
+package com.danya.lab6.client.managers;
 
-import com.danya.lab5.common.protocol.Request;
-import com.danya.lab5.common.protocol.Response;
+import com.danya.lab6.common.protocol.Request;
+import com.danya.lab6.common.protocol.Response;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -12,7 +12,7 @@ import java.net.Socket;
 public class ClientNetworkManager {
     private final String host;
     private final int basePort;
-    private static final int MAX_PORT_ATTEMPTS = 10; // Максимум портов для перебора
+    private static final int MAX_PORT_ATTEMPTS = 20;
 
     public ClientNetworkManager(String host, int basePort) {
         this.host = host;

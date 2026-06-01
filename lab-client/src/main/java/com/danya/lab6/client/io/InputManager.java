@@ -1,6 +1,6 @@
-package com.danya.lab5.client.io;
+package com.danya.lab6.client.io;
 
-import com.danya.lab5.client.exceptions.RecurtionException;
+import com.danya.lab6.client.exceptions.RecurtionException;
 
 import java.util.Scanner;
 import java.util.Stack;

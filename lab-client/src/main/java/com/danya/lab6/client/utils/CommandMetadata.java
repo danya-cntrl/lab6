@@ -1,4 +1,4 @@
-package com.danya.lab5.client.utils;
+package com.danya.lab6.client.utils;
 
 public class CommandMetadata {
     private final String name;

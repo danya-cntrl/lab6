@@ -1,4 +1,4 @@
-package com.danya.lab5.client.exceptions;
+package com.danya.lab6.client.exceptions;
 
 public class IncorrectInputException extends Exception{
     public IncorrectInputException(String message) {

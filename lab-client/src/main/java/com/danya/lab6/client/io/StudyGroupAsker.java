@@ -1,12 +1,12 @@
-package com.danya.lab5.client.io;
+package com.danya.lab6.client.io;
 
-import com.danya.lab5.client.utils.Validator;
-import com.danya.lab5.common.models.Coordinates;
-import com.danya.lab5.common.models.Location;
-import com.danya.lab5.common.models.Person;
-import com.danya.lab5.common.models.StudyGroup;
-import com.danya.lab5.common.models.enums.FormOfEducation;
-import com.danya.lab5.common.models.enums.Semester;
+import com.danya.lab6.common.util.Validator;
+import com.danya.lab6.common.models.Coordinates;
+import com.danya.lab6.common.models.Location;
+import com.danya.lab6.common.models.Person;
+import com.danya.lab6.common.models.StudyGroup;
+import com.danya.lab6.common.models.enums.FormOfEducation;
+import com.danya.lab6.common.models.enums.Semester;
 
 import java.util.Arrays;
 
