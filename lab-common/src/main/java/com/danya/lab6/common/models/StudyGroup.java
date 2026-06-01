@@ -1,8 +1,7 @@
-package com.danya.lab5.common.models;
+package com.danya.lab6.common.models;
 
-import com.danya.lab5.client.models.enums.*;
-import com.danya.lab5.common.models.enums.FormOfEducation;
-import com.danya.lab5.common.models.enums.Semester;
+import com.danya.lab6.common.models.enums.FormOfEducation;
+import com.danya.lab6.common.models.enums.Semester;
 
 import java.io.Serializable;
 import java.time.LocalDate;

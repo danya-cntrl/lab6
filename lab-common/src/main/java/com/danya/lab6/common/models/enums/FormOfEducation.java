@@ -1,4 +1,4 @@
-package com.danya.lab5.common.models.enums;
+package com.danya.lab6.common.models.enums;
 
 public enum FormOfEducation {
     DISTANCE_EDUCATION,

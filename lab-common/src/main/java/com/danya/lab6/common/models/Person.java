@@ -1,9 +1,10 @@
-package com.danya.lab5.common.models;
+package com.danya.lab6.common.models;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 
-public class Person {
+public class Person implements Serializable {
     private String name; //Поле не может быть null, Строка не может быть пустой
     private Date birthday; //Поле не может быть null
     private double height; //Значение поля должно быть больше 0

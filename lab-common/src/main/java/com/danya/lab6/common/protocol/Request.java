@@ -1,4 +1,4 @@
-package com.danya.lab5.common.protocol;
+package com.danya.lab6.common.protocol;
 
 import java.io.Serializable;
 

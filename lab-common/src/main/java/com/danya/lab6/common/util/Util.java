@@ -1,4 +1,4 @@
-package com.danya.lab5.common.util;
+package com.danya.lab6.common.util;
 
 public final class Util {
     private Util() {

@@ -1,8 +1,9 @@
-package com.danya.lab5.common.models;
+package com.danya.lab6.common.models;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class Coordinates implements Comparable<Coordinates>{
+public class Coordinates implements Comparable<Coordinates>, Serializable {
     private Float x; //Поле не может быть null
     private int y; //Максимальное значение поля: 639
 

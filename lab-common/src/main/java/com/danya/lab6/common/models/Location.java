@@ -1,8 +1,9 @@
-package com.danya.lab5.common.models;
+package com.danya.lab6.common.models;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class Location {
+public class Location implements Serializable {
     private double x;
     private Double y; //Поле не может быть null
     private String name; //Строка не может быть пустой, Поле может быть null

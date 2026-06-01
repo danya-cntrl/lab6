@@ -1,9 +1,9 @@
-package com.danya.lab5.client.utils;
+package com.danya.lab6.common.util;
 
-import com.danya.lab5.common.models.Coordinates;
-import com.danya.lab5.common.models.Location;
-import com.danya.lab5.common.models.Person;
-import com.danya.lab5.common.models.StudyGroup;
+import com.danya.lab6.common.models.Coordinates;
+import com.danya.lab6.common.models.Location;
+import com.danya.lab6.common.models.Person;
+import com.danya.lab6.common.models.StudyGroup;
 
 public class Validator {
 
