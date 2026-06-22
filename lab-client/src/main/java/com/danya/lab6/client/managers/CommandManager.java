@@ -27,6 +27,9 @@ public class CommandManager {
         commands.put("show", new CommandMetadata("show", false, false));
         commands.put("clear", new CommandMetadata("clear", false, false));
         commands.put("history", new CommandMetadata("history", false, false));
+        commands.put("max_by_students_count", new CommandMetadata("max_by_students_count", false, false));
+        commands.put("min_by_coordinates", new CommandMetadata("min_by_coordinates", false, false));
+
 
         commands.put("add", new CommandMetadata("add", false, true));
         commands.put("add_if_max", new CommandMetadata("add_if_max", false, true));
@@ -48,20 +51,20 @@ public class CommandManager {
 
         CommandMetadata command = commands.get(cmdName);
         if (command == null) {
-            System.out.println("КОманда не найдена");
+            System.out.println("Команда не найдена");
             return;
         }
         if (command.isRequiresStringArg()  && arg.isEmpty()) {
-            System.out.println("Команда требует аргумент");
+            System.out.println("КОманда требует аргумент");
             return;
         }
-        if (command.isRequiresStringArg()  && !arg.isEmpty()) {
+        if (!command.isRequiresStringArg()  && !arg.isEmpty()) {
             System.out.println("Команде не нужен аргумент");
             return;
         }
 
         if ("exit".equals(cmdName)) {
-            System.out.println("Завершение работы клиентского приложения. Всего хорошего!");
+            System.out.println("Завершение работы клиентского приложения. Пока");
             System.exit(0);
         }
 

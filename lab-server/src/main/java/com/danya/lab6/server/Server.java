@@ -30,7 +30,7 @@ public class Server {
         ServerNetworkManager networkManager = new ServerNetworkManager(port, requestHandler);
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            System.out.println("[INFO] Сервер завершает работу. Сохранение коллекции...");
+            System.out.println("[INFO] Сервер завершает работу. Сохранение коллекции");
             collectionManager.save();
         }));
 

@@ -98,6 +98,4 @@ public class CollectionManager {
                 .filter(group -> adminName.equals(group.getGroupAdmin().getName()))
                 .collect(Collectors.toList());
     }
-
-    public HashSet<StudyGroup> getCollection() { return collection; }
 }

@@ -92,6 +92,9 @@ public class Validator {
     }
 
     public boolean validatePassportID(String passportID) {
+        if (passportID == null || passportID.isEmpty()) {
+            return true;
+        }
         return passportID.length() >= 4;
     }
 
