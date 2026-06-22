@@ -7,6 +7,8 @@ public class Request implements Serializable {
     private final String commandName;
     private final Serializable argument;
 
+    private final String amebaToken = "amebaLab6";
+
     public Request(String commandName) {
         this.commandName = commandName;
         this.argument = null;
@@ -15,6 +17,10 @@ public class Request implements Serializable {
     public Request(String commandName, Serializable argument) {
         this.commandName = commandName;
         this.argument = argument;
+    }
+
+    public String getAmebaToken() {
+        return amebaToken;
     }
 
     public String getCommandName() {
