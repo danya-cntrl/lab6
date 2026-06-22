@@ -2,6 +2,7 @@ package com.danya.lab6.server.managers;
 
 import com.danya.lab6.common.protocol.Response;
 import com.danya.lab6.common.protocol.Request;
+import com.danya.lab6.server.utils.ClientSession;
 import com.danya.lab6.server.utils.RequestHandler;
 
 import java.io.*;
@@ -91,70 +92,102 @@ public class ServerNetworkManager {
             clientChannel.configureBlocking(false);
 
             System.out.println("[INFO] Клиент подключился: " + clientChannel.getRemoteAddress());
-            clientChannel.register(selector, SelectionKey.OP_READ);
+            clientChannel.register(selector, SelectionKey.OP_READ, new ClientSession());
 
         } catch (IOException e) {
             System.err.println("[ERROR] Не удалось принять подключение: " + e.getMessage());
         }
     }
 
+    private byte[] serialize(Object obj) throws IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+        try (ObjectOutputStream oos = new ObjectOutputStream(baos)) {
+            oos.writeObject(obj);
+            oos.flush();
+        }
+
+        return baos.toByteArray();
+    }
+
+    private Request deserializeRequest(byte[] data) throws IOException, ClassNotFoundException {
+        try (ByteArrayInputStream bais = new ByteArrayInputStream(data);
+             ObjectInputStream ois = new ObjectInputStream(bais)) {
+            return (Request) ois.readObject();
+        }
+    }
 
     private void readRequest(SelectionKey key) {
         SocketChannel clientChannel = (SocketChannel) key.channel();
-        ByteBuffer buffer = ByteBuffer.allocate(1024 * 64);
+        ClientSession session = (ClientSession) key.attachment();
 
         try {
-            int bytesRead = clientChannel.read(buffer);
-            if (bytesRead == -1) {
+            if (session.isReadingLength()) {
+                int read = clientChannel.read(session.getLengthBuffer());
+                if (read == -1) {
+                    disconnect(key, clientChannel);
+                    return;
+                }
+                if (session.getLengthBuffer().hasRemaining()) {
+                    return;
+                }
+
+                session.getLengthBuffer().flip();
+                int messageLength = session.getLengthBuffer().getInt();
+                session.setDataBuffer(ByteBuffer.allocate(messageLength));
+                session.setReadingLength(false);
+            }
+
+            int read = clientChannel.read(session.getDataBuffer());
+            if (read == -1) {
+                disconnect(key, clientChannel);
+                return;
+            }
+            if (session.getDataBuffer().hasRemaining()) {
+                return;
+            }
+
+            session.getDataBuffer().flip();
+            byte[] requestBytes = new byte[session.getDataBuffer().remaining()];
+            session.getDataBuffer().get(requestBytes);
+            Request request = deserializeRequest(requestBytes);
+
+            if (!"amebaLab6".equals(request.getAmebaToken())) {
+                System.out.println("[WARN] запрос от неизвестного клиента");
                 disconnect(key, clientChannel);
                 return;
             }
 
-            buffer.flip();
-            byte[] bytes = new byte[buffer.remaining()];
-            buffer.get(bytes);
+            System.out.println("[INFO] Получена команда: " + request.getCommandName());
 
-            try (ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
-                 ObjectInputStream ois = new ObjectInputStream(bais)) {
-
-                Request request = (Request) ois.readObject();
-                System.out.println("[INFO] Успешно прочитана команда: " + request.getCommandName());
-
-                Response response = requestHandler.handle(request);
-                sendResponse(clientChannel, response);
-            } catch (ClassNotFoundException e) {
-                System.err.println("[ERROR] Ошибка десериализации: класс не найден.");
-                sendResponse(clientChannel, new Response(false, "Серверная ошибка десериализации."));
-            }
-
+            Response response = requestHandler.handle(request);
+            sendResponse(clientChannel, response);
             disconnect(key, clientChannel);
-
         } catch (IOException e) {
-            System.err.println("[WARN] Клиент отключился во время обмена данными.");
+            System.err.println("[ERROR] Ошибка чтения: " + e.getMessage());
+            disconnect(key, clientChannel);
+        } catch (ClassNotFoundException e) {
+            System.err.println("[ERROR] Не найден класс Request");
             disconnect(key, clientChannel);
         }
     }
 
-
     private void sendResponse(SocketChannel clientChannel, Response response) {
-        try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
-             ObjectOutputStream oos = new ObjectOutputStream(baos)) {
+        try {
+            byte[] responseBytes = serialize(response);
+            ByteBuffer buffer = ByteBuffer.allocate(4 + responseBytes.length);
 
-            oos.writeObject(response);
-            oos.flush();
-            byte[] responseBytes = baos.toByteArray();
+            buffer.putInt(responseBytes.length);
+            buffer.put(responseBytes);
+            buffer.flip();
 
-            ByteBuffer buffer = ByteBuffer.wrap(responseBytes);
             while (buffer.hasRemaining()) {
                 clientChannel.write(buffer);
             }
-            System.out.println("[INFO] Ответ успешно отправлен клиенту: " + clientChannel.getRemoteAddress());
-
         } catch (IOException e) {
-            System.err.println("[ERROR] Не удалось отправить ответ клиенту: " + e.getMessage());
+            System.err.println("[ERROR] Не удалось отправить ответ: " + e.getMessage());
         }
     }
-
 
     private void disconnect(SelectionKey key, SocketChannel clientChannel) {
         key.cancel();
